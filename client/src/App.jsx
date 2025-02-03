@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
-import Form from './components/Form';
-import Card from './components/Card';
-import Notes from './components/Notes';
-import LearnHub from './components/LearnHub';
-import axios from 'axios';
-import './styles.css';
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
+import Form from "./components/Form";
+import Card from "./components/Card";
+import Notes from "./components/Notes";
+import LearnHub from "./components/LearnHub";
+import axios from "axios";
+import "./styles.css";
 
 const App = () => {
   const [students, setStudents] = useState([]);
@@ -13,7 +19,9 @@ const App = () => {
 
   // Calculate statistics
   const totalStudents = students.length;
-  const placedStudents = students.filter(student => student.status === 'Placed').length;
+  const placedStudents = students.filter(
+    (student) => student.status === "Placed"
+  ).length;
   const unplacedStudents = totalStudents - placedStudents;
 
   useEffect(() => {
@@ -24,7 +32,7 @@ const App = () => {
         );
         setStudents(response.data);
       } catch (error) {
-        console.error('Error fetching students:', error);
+        console.error("Error fetching students:", error);
       }
     };
     fetchStudents();
@@ -39,21 +47,21 @@ const App = () => {
       );
       setStudents((prevStudents) => [...prevStudents, response.data]);
     } catch (error) {
-      console.error('Error adding student:', error);
+      console.error("Error adding student:", error);
     }
   };
 
   const deleteStudent = async (id) => {
     try {
-      await axios.delete(`https://webionclone.onrender.com/${id}`);
+      await axios.delete(`https://webionclone.onrender.com/students/${id}`); // Fix the URL
       setStudents(students.filter((student) => student.id !== id));
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error("Error deleting student:", error);
     }
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -61,12 +69,14 @@ const App = () => {
       <nav className="navbar">
         <div className="nav-container">
           <div className="logo-container">
-            <Link to="/LearnHub" className="logo">LearnHub</Link>
+            <Link to="/learnhub" className="logo">
+              LearnHub
+            </Link>
           </div>
           <button
             className="admin-btn"
             onClick={() => {
-              navigate('/');
+              navigate("/");
               scrollToTop();
             }}
           >

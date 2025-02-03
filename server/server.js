@@ -10,18 +10,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send({
-    activeStatus: true,
-  });
+  res.send({ activeStatus: true });
 });
 
-// Create and connect to the SQLite database
-const db = new sqlite3.Database(":memory:");
+// Persistent SQLite database
+const db = new sqlite3.Database("./students.db", (err) => {
+  if (err) {
+    console.error("Error opening database:", err.message);
+  } else {
+    console.log("Connected to the SQLite database.");
+  }
+});
 
-// Create the students table
+// Create students table if not exists
 db.serialize(() => {
   db.run(`
-    CREATE TABLE students (
+    CREATE TABLE IF NOT EXISTS students (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
       role TEXT,
@@ -33,41 +37,33 @@ db.serialize(() => {
   `);
 });
 
-// API to fetch all students
+// Fetch all students
 app.get("/students", (req, res) => {
   db.all("SELECT * FROM students", (err, rows) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
+    if (err) return res.status(500).send(err);
     res.json(rows);
   });
 });
 
-// API to add a new student
+// Add a new student
 app.post("/students", (req, res) => {
   const { name, role, email, phone, course, status } = req.body;
-  const sql =
-    "INSERT INTO students (name, role, email, phone, course, status) VALUES (?, ?, ?, ?, ?, ?)";
+  const sql = `INSERT INTO students (name, role, email, phone, course, status) VALUES (?, ?, ?, ?, ?, ?)`;
   db.run(sql, [name, role, email, phone, course, status], function (err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
+    if (err) return res.status(500).send(err);
     res.json({ id: this.lastID, name, role, email, phone, course, status });
   });
 });
 
-// API to delete a student
+// Delete a student
 app.delete("/students/:id", (req, res) => {
   const { id } = req.params;
-  const sql = "DELETE FROM students WHERE id = ?";
-  db.run(sql, [id], function (err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
+  db.run("DELETE FROM students WHERE id = ?", [id], function (err) {
+    if (err) return res.status(500).send(err);
     res.json({ success: true });
   });
 });
 
-app.listen(port | 5000, () => {
+app.listen(port || 5000, () => {
   console.log(`Server running on port ${port}`);
 });

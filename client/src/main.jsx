@@ -1,5 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import AppWrapper from './App'; // Ensure this is correct
+import React from "react";
+import ReactDOM from "react-dom/client"; // Import from 'react-dom/client'
+import AppWrapper from "./App"; // Ensure this is correct
 
-ReactDOM.render(<AppWrapper />, document.getElementById('root'));
+// Create a root and render the app
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<AppWrapper />);

@@ -19,7 +19,9 @@ const App = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/students');
+        const response = await axios.get(
+          "https://webionclone.onrender.com/students"
+        );
         setStudents(response.data);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -31,7 +33,10 @@ const App = () => {
   const addStudent = async (student) => {
     try {
       const newStudent = { ...student, id: new Date().getTime() };
-      const response = await axios.post('http://localhost:5000/students', newStudent);
+      const response = await axios.post(
+        "https://webionclone.onrender.com/students",
+        newStudent
+      );
       setStudents((prevStudents) => [...prevStudents, response.data]);
     } catch (error) {
       console.error('Error adding student:', error);
@@ -40,7 +45,7 @@ const App = () => {
 
   const deleteStudent = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/students/${id}`);
+      await axios.delete(`https://webionclone.onrender.com/${id}`);
       setStudents(students.filter((student) => student.id !== id));
     } catch (error) {
       console.error('Error deleting student:', error);
